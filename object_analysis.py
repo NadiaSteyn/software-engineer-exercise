@@ -20,14 +20,18 @@ def get_most_common_object(objects):
     return most_common_objects
 
 
-def farthest(objects): # function that returns the object with the highest redshift.
-    highest_redshift = None
-    for o in objects:
-        if highest_redshift is None or o["redshift"] < highest_redshift: # problem: this symbol should be ">", not "<".
-            highest_redshift = o["redshift"]
-    for o in objects:
-        if o["redshift"] == highest_redshift:
-            return o
+def get_furthest_object(objects):
+    highest_redshift = None # redshift value
+    furthest_objects = [] # object(s)
+    for obj in objects:
+        if highest_redshift is None or obj["redshift"] >= highest_redshift:
+            if highest_redshift == obj["redshift"]:
+                furthest_objects.append(obj)
+            else:
+                highest_redshift = obj["redshift"]
+                furthest_objects = [obj]
+            
+    return furthest_objects
 
 
 # Execute the following code only if the file was run directly, and not imported.
@@ -56,6 +60,4 @@ if __name__ == '__main__':
         
     print(get_most_common_object(json.loads(data)),'\n') # function optimised
     
-    print(farthest(json.loads(data)))
-    # as with the first function, this function will only return one result even if two or more objects have equally high redshifts.
-    # need to write a test.
+    print(get_furthest_object(json.loads(data))) # function optimised
