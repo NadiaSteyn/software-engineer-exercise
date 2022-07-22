@@ -1,52 +1,24 @@
-def aboundant(objects): # function that counts all objects and returns the object with the highest count.
-    sum_stars = 0
-    sum_galaxies = 0
-    sum_supernovae = 0
-    sum_frbs = 0
-    for o in objects:
-        if o['type'] == 'star':
-            sum_stars += 1
-    for o in objects:
-        if o['type'] == 'galaxy':
-            sum_galaxies += 1
-    for o in objects:
-        if o['type'] == 'supernovae':
-            sum_supernovae += 1
-    for o in objects:
-        if o['type'] == 'frb':
-            sum_supernovae += 1 # typo: this should be sum_frbs += 1
-    if sum_stars >= sum_galaxies and sum_stars >= sum_supernovae and sum_stars >= sum_frbs:
-        return 'stars'
-    if sum_galaxies >= sum_stars and sum_galaxies >= sum_supernovae and sum_galaxies >= sum_frbs:
-        return 'galaxies'
-    if sum_supernovae >= sum_stars and sum_supernovae >= sum_galaxies and sum_supernovae >= sum_frbs:
-        return 'supernovae'
-    if sum_frbs >= sum_stars and sum_frbs >= sum_galaxies and sum_frbs >= sum_supernovae:
-        return 'frbs'
-# re-organise the layout of the functions and the given example data.
-input = """
-[
-    {
-        "type": "star",
-        "name": "alpha-centaurus",
-        "redshift": 0
-    },
-    {
-        "type": "nebula",
-        "name": "crab",
-        "redshift": 0
-    },
-    {
-        "type": "galaxy",
-        "name": "sombrero",
-        "redshift": 0
-    }
-]
-"""
-# don't use keywords as variable names ('input')
 import json # used to parse a valid JSON string and convert it into a Python Dictionary.
-print(aboundant(json.loads(input)))
-# problem with this function: if two or more objects have the same count, the function will only return the first of these objects. Need to write a test.
+
+def get_most_common_object(objects):
+    '''
+    Function that counts each type of object and returns the most common object(s).
+    '''
+    abundant_dict = {'star':0,
+                     'galaxy':0,
+                     'supernovae':0,
+                     'frb':0}
+
+    for obj in objects: # one for loop instead of 4, to incerase performance
+        if obj['type'] in list(abundant_dict.keys()):
+            abundant_dict[obj['type']] += 1
+        else: 
+            print(f"Object {obj} has unknown type {obj['type']}")
+    
+    max_value = max(abundant_dict.values())
+    most_common_objects = [key for key, value in abundant_dict.items() if value == max_value] # list comprehension is faster than for loops
+    return most_common_objects
+
 
 def farthest(objects): # function that returns the object with the highest redshift.
     highest_redshift = None
@@ -57,6 +29,33 @@ def farthest(objects): # function that returns the object with the highest redsh
         if o["redshift"] == highest_redshift:
             return o
 
-print(farthest(json.loads(input)))
-# as with the first function, this function will only return one result even if two or more objects have equally high redshifts.
-# need to write a test.
+
+# Execute the following code only if the file was run directly, and not imported.
+if __name__ == '__main__':
+    
+    # don't use keywords as variable names ('input')
+    data = """
+    [
+        {
+            "type": "star",
+            "name": "alpha-centaurus",
+            "redshift": 0
+        },
+        {
+            "type": "nebula",
+            "name": "crab",
+            "redshift": 0
+        },
+        {
+            "type": "galaxy",
+            "name": "sombrero",
+            "redshift": 0
+        }
+    ]
+    """
+        
+    print(get_most_common_object(json.loads(data)),'\n') # function optimised
+    
+    print(farthest(json.loads(data)))
+    # as with the first function, this function will only return one result even if two or more objects have equally high redshifts.
+    # need to write a test.
