@@ -23,11 +23,13 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: "3.10"
+        
     - name: Check PHP Version
       run: php -v
       
     - name: Check Composer Version
       run: composer -V
       
-    - name: Run Test Suite
-      run: Test_object_analysis.py
+    - name: unit test
+      run: |
+        python ./Test_object_analysis.py
